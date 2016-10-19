@@ -1,0 +1,7 @@
+div.bar {
+    display: inline-block;
+    width: 20px;                /* bar width */
+    height: 75px;               /* We'll override height later */
+    background-color: teal;
+    margin-right: 2px;          /*seperate bar by adding the right margin*/
+}
