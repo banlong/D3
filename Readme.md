@@ -1,4 +1,3 @@
-https://github.com/banlong/D3.git
 
 ## Setting Up a Web Server
 In some cases, you can view local HTML files directly in your web browser. However,
@@ -26,8 +25,12 @@ Terminal into Spotlight (the magnifying glass menu item in the upper-right corne
 your screen). Linux users are born knowing how to open a terminal window, so I won’t
 waste your time explaining it here.
 To run a Python web server:
-1. Open up a new terminal window.
-2. Via the command line, navigate into the directory that you want served. For example,
+# 1. Open up a new terminal window.
+# 2. Via the command line, navigate into the directory that you want served. For example,
 if your project folder is in your Desktop folder on your Mac, you could type:
 cd ~/Desktop/project-folder.
-3. Enter python -m SimpleHTTPServer 8888 &.
+# 3. Enter python -m SimpleHTTPServer 8888 &.
+
+This will activate the server on port 8888. Switch back to your web browser and visit
+the following URL: http://localhost:8888/. Yes, instead of www.something.com, you just
+use localhost, which tells the browser to request a page from this machine.
