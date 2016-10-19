@@ -32,5 +32,5 @@ cd ~/Desktop/project-folder.
 ### 3. Enter python -m SimpleHTTPServer 8888 &.
 
 This will activate the server on port 8888. Switch back to your web browser and visit
-the following URL: http://localhost:8888/. Yes, instead of www.something.com, you just
+the following URL:<b> http://localhost:8888/ </b>. Yes, instead of www.something.com, you just
 use localhost, which tells the browser to request a page from this machine.
