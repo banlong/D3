@@ -12,21 +12,27 @@
 
     //Bar chart with label, color range, scaling, axis
     function drawStandBar(){
-        //var ydata = [23, 10, 13, 19, 21, 25, 22, 18, 15, 13, 11, 12, 15, 20, 18, 17, 16, 18, 23, 25];
-        //var xdata =     ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U"];
+        var ydata = [23, 10, 13, 19, 21, 25, 22, 18, 15, 13, 11, 12, 15, 20, 18, 17, 16, 18, 23, 25];
+        var xdata =     ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U"];
+        var colors = ['#99CC00','#FFCC00','#FF9900','#FF6600','#666699','#969696','#003366','#339966','#003300','#333300','#993300','#333399','#7EBC89','#0283AF','#79BCBF','#99C19E'];
+        //var ydata = [23, 10, 13, 19, 21];
+        //var xdata = ["A", "B", "C", "D", "E"];
 
-        var ydata = [23, 10, 13, 19, 21];
-        var xdata = ["A", "B", "C", "D", "E"];
-
-        var margin = {top: 40, right: 20, bottom: 30, left: 40},
-            width = 600 - margin.left - margin.right,    //900
-            height = 270 - margin.top - margin.bottom;   //430
-
+        //Configuration
+        var expectBarwidth =  40;
         var barLeftPadding = 15;                //distance from y-axis to the first bar
+
+        var frameWidth = 600, frameHeigh = 270;
+        var margin = {top: 20, right: 20, bottom: 80, left: 60};
+        frameWidth = expectBarwidth*xdata.length + barLeftPadding + margin.left + margin.right;
+        var width =  frameWidth - margin.left - margin.right;    //900
+        var height = frameHeigh - margin.top - margin.bottom;   //430
+
         var bWidth = width /xdata.length;       //bar width
         var bGap = 2;                           //distance among bars
         var bar2AxisGap = -2;                   //distance from x-axis to the bottom of bar
         var xAxisX = 0;                         //x-position of xAxis
+        var xAxixTextAngle = "rotate(-30)";
 
         //Scaling
         //Because each bar get one extra pixel to make it seperate, we must scale
@@ -39,6 +45,7 @@
 
         var xAxis = d3.svg.axis()
             .scale(xScale)
+            .tickFormat(function(d) { return d; })  //format x-tick data
             .orient("bottom");
 
         var yAxis = d3.svg.axis()
@@ -64,8 +71,14 @@
             .attr("width", xScale.rangeBand() + bGap)
             .attr("y", function(d) { return yScale(d) + bar2AxisGap; })
             .attr("height", function(d) { return height - yScale(d); })
-            .attr("fill", function (d) {
-                return "rgb(5, 134, " + (d * 10) + ")";
+            .attr("fill", function (d, i) {
+                //var rand = Math.floor(Math.random() * 250) + 1;
+                //return "rgb(5, 124, " + rand + ")";
+                if(i > colors.length -1){
+                    return (i % ydata.length);
+                }else{
+                    return colors[i]
+                }
             });
 
         //Add text for bar, must after bar so that it can be on top
@@ -88,17 +101,17 @@
         svg.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + height  + ")")
-            .call(xAxis).append("text")
-            .attr("transform", "rotate(0)")
-            .attr("y", 25)
-            .attr("x", width + 15)
-            .attr("dy", dy)
+            .call(xAxis)
+            .selectAll("text")
             .style("text-anchor", "end")
-            .text("Option");
-
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", xAxixTextAngle)
+            .style("text-anchor", "right");
 
         //Add y-axis
-        var dy = "-3me";                //position of "Frequency" from the y-axis, small-left : big-right
+        var dy = "0.1em";
+        //position of "Frequency" from the y-axis, small-left : big-right
         svg.append("g")
             .attr("class", "y axis")
             .call(yAxis)
