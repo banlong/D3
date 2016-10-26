@@ -34,3 +34,17 @@ cd ~/Desktop/project-folder.
 This will activate the server on port 8888. Switch back to your web browser and visit
 the following URL:<b> http://localhost:8888/ </b>. Yes, instead of www.something.com, you just
 use localhost, which tells the browser to request a page from this machine.
+
+Notice: if you install python v3.x, using the below command to start the server
+(http://angusjune.github.io/blog/2014/08/16/python-3-dot-x-no-module-named-simplehttpserver/)
+1. Move into the folder
+2. Type command "python -m http.server 8888" to start http service in the current dir
+
+D:\gows\src\D3>python -m http.server 8888
+Serving HTTP on 0.0.0.0 port 8888 ...
+127.0.0.1 - - [26/Oct/2016 12:03:26] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [26/Oct/2016 12:03:27] "GET /css/div.css HTTP/1.1" 200 -
+127.0.0.1 - - [26/Oct/2016 12:03:27] "GET /d3/d3.v3.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [26/Oct/2016 12:03:27] "GET /js/div.js HTTP/1.1" 200 -
+127.0.0.1 - - [26/Oct/2016 12:03:27] code 404, message File not found
+127.0.0.1 - - [26/Oct/2016 12:03:27] "GET /favicon.ico HTTP/1.1" 404 -

@@ -5,10 +5,349 @@
 (function(){
 
     //drawDiv();
-    //drawSVG();
+    drawSVG();
     //drawBarChart();
     //drawBarChartWithScale();
+
     drawStandBar();
+    drawScatterPlot1();
+
+    function drawScatterPlot() {
+        var inputData = [
+            {org: "HKHKHGJLKL",
+            name: "Washington",
+                data: [
+                ["A", 20],
+                ["B", 90],
+                ["C", 50],
+                ["D", 33],
+                ["E", 95],
+                ["F", 12],
+                ["G", 44],
+                ["H", 67],
+                ["I", 21],
+                ["J", 88]
+            ]},
+            {org: "HKHKHGJLKL",
+             name: "Vancouver",
+             data: [
+                ["A", 25],
+                ["B", 80],
+                ["C", 70],
+                ["D", 53],
+                ["E", 65],
+                ["F", 14],
+                ["G", 64],
+                ["H", 87],
+                ["I", 60],
+                ["J", 100]
+            ]}
+        ];
+
+        //Input data
+        //var dataset = [
+        //    ["A", 20],
+        //    ["B", 90],
+        //    ["C", 50],
+        //    ["D", 33],
+        //    ["E", 95],
+        //    ["F", 12],
+        //    ["G", 44],
+        //    ["H", 67],
+        //    ["I", 21],
+        //    ["J", 88]
+        //];
+
+        var colors = [
+            {fill: "yellow", stroke: "orange", text :"black"},
+            {fill: "grey"  , stroke: "blue",   text :"white"}
+        ];
+        var xData = ["A", "B", "C","D", "E", "F","G", "H", "I", "J"];
+        //var yData = [20, 90, 50, 33, 95,  12, 44, 67, 21, 88];
+
+        //var dataset = [["A", 20], ["B", 90], ["C", 50]];
+        //var xData = ["A", "B", "C"];
+
+        //Chart dimension
+        var frameWidth = 700, frameHeigh = 400;
+        var margin = {top: 40, right: 40, bottom: 40, left: 40};
+        var width =  frameWidth - margin.left - margin.right;    //900
+        var height = frameHeigh - margin.top - margin.bottom;   //430
+
+        //Create SVG element
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // add some padding, when padding = 0 some elements were cut off.
+        // Using padding to define the area  of displaying chart
+        var padding = 20;
+
+        //Define scales
+        var xScale = d3.scale.ordinal()
+            .domain(xData)
+            .rangeRoundBands([margin.left, width-padding], 0.05);
+
+
+        //get max score among school
+        var max = 0;
+        for(var i = 0; i < inputData.length; i++){
+            if(d3.max(inputData[i], function(d){return d[1]}) > max){
+                max = d3.max(inputData[i], function(d){return d[1]})
+            }
+        }
+
+        var yScale = d3.scale.linear()
+            //.domain([0, d3.max(dataset, function(d) { return d[1]; })])
+            .domain([0, max])
+            .range([height - padding, 2*padding]);
+
+        var rScale = d3.scale.linear()
+            .domain([0, max])
+            //.domain([0, d3.max(dataset, function(d) { return d[1]; })])
+            .range([10, 20]); //radius values will always fall within this range
+
+
+        //Define axis
+        var xAxis = d3.svg.axis()
+            .scale(xScale)
+            .tickFormat(function(d) {
+                console.log("d:" + d);
+                return d; })  //format x-tick data
+            .ticks(xData.length)
+            .orient("bottom");
+
+
+        var yAxis = d3.svg.axis()
+            .scale(yScale)
+            //.ticks(5)
+            .orient("left");
+
+        for(var orgId = 0; orgId < inputData.length; orgId++) {
+            //Add bubbles
+            svg.selectAll("circle")
+                .data(inputData[orgId].data)
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) {
+                    return (2 * margin.left + padding + xScale(d[0]));
+                })
+                .attr("cy", function (d) {
+                    return yScale(d[1]);
+                })
+                .attr("r", function (d) {
+                    return rScale(d[1]);
+                })
+                //fill color
+                .attr("fill", function () {
+                    var index = orgId % 2;
+                    return colors[index].fill
+                })
+                //color of boundary
+                .attr("stroke", function (d, i) {
+                    var index = orgId % 2;
+                    return colors[index].stroke
+                })
+                //width of the boundary
+                .attr("stroke-width", function (d) {
+                    return rScale(d[1]) / 4;
+                });
+
+
+            //Add texts
+            svg.selectAll("text")
+                .data(inputData[orgId].data)
+                .enter()
+                .append("text")
+                .text(function (d) {
+                    return d[1];
+                })
+                .attr("x", function (d) {
+                    var textWidth = this.getComputedTextLength();
+                    return 2 * margin.left + xScale(d[0]) + 12;
+                })
+                .attr("y", function (d) {
+                    return yScale(d[1]) + 5;
+                })
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "11px")
+                .attr("fill", function (d, i) {
+                    var index = orgId % 2;
+                    return colors[index].text
+                });
+        }
+        //Adding X-Axis
+        svg.append("g")
+            .attr("class", "axis")
+            //position of x-axis
+            .attr("transform", "translate(" + (margin.left -padding) +"," + (height - padding) + ")")
+            .call(xAxis);
+
+        //Add y-axis
+        var dy = "0.1em";
+        svg.append("g")
+            .attr("class", "y axis")
+            //position of y-axis
+            .attr("transform", "translate(" + (margin.left + padding) + ",0)")
+            .call(yAxis)
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 10)
+            .attr("dy", dy)
+            .attr("x", -20)
+            .style("text-anchor", "end")
+            .text("Score");
+
+
+    }
+
+    function drawScatterPlot1() {
+        //Input data
+        var dataset = [
+            ["A", 20],
+            ["B", 90],
+            ["C", 50],
+            ["D", 33],
+            ["E", 95],
+            ["F", 12],
+            ["G", 44],
+            ["H", 67],
+            ["I", 21],
+            ["J", 88]
+        ];
+
+        var colors = [
+            {fill: "yellow", stroke: "orange", text :"black"},
+            {fill: "grey"  , stroke: "blue",   text :"white"}
+        ];
+        var xData = ["A", "B", "C","D", "E", "F","G", "H", "I", "J"];
+        //var yData = [20, 90, 50, 33, 95,  12, 44, 67, 21, 88];
+
+
+
+        //Chart dimension
+        var frameWidth = 700, frameHeigh = 400;
+        var margin = {top: 40, right: 40, bottom: 40, left: 40};
+        var width =  frameWidth - margin.left - margin.right;    //900
+        var height = frameHeigh - margin.top - margin.bottom;   //430
+
+        //Create SVG element
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // add some padding, when padding = 0 some elements were cut off.
+        // Using padding to define the area  of displaying chart
+        var padding = 20;
+
+        //Define scales
+        var xScale = d3.scale.ordinal()
+            .domain(xData)
+            .rangeRoundBands([margin.left, width-padding], 0.05);
+
+        var yScale = d3.scale.linear()
+            .domain([0, d3.max(dataset, function(d) { return d[1]; })])
+            .range([height - padding, 2*padding]);
+
+        var rScale = d3.scale.linear()
+            .domain([0, d3.max(dataset, function(d) { return d[1]; })])
+            .range([10, 20]); //radius values will always fall within this range
+
+
+        //Define axis
+        var xAxis = d3.svg.axis()
+            .scale(xScale)
+            .tickFormat(function(d) {
+                console.log("d:" + d);
+                return d; })  //format x-tick data
+            .ticks(xData.length)
+            .orient("bottom");
+
+
+        var yAxis = d3.svg.axis()
+            .scale(yScale)
+            //.ticks(5)
+            .orient("left");
+
+
+        //Add bubbles
+        svg.selectAll("circle")
+            .data(dataset)
+            .enter()
+            .append("circle")
+            .attr("cx", function (d) {
+                return (2 * margin.left + padding + xScale(d[0]));
+            })
+            .attr("cy", function (d) {
+                return yScale(d[1]);
+            })
+            .attr("r", function (d) {
+                return rScale(d[1]);
+            })
+            //fill color
+            .attr("fill", function (d, i) {
+                var index = i % 2;
+                return colors[index].fill
+            })
+            //color of boundary
+            .attr("stroke", function (d, i) {
+                var index = i % 2;
+                return colors[index].stroke
+            })
+            //width of the boundary
+            .attr("stroke-width", function (d) {
+                return rScale(d[1]) / 4;
+            });
+
+
+        //Add texts
+        svg.selectAll("text")
+            .data(dataset)
+            .enter()
+            .append("text")
+            .text(function (d) {
+                return d[1];
+            })
+            .attr("x", function (d) {
+                var textWidth = this.getComputedTextLength();
+                return 2 * margin.left + xScale(d[0]) + 12;
+            })
+            .attr("y", function (d) {
+                return yScale(d[1]) + 5;
+            })
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "11px")
+            .attr("fill", function (d, i) {
+                var index = i % 2;
+                return colors[index].text
+            });
+
+        //Adding X-Axis
+        svg.append("g")
+            .attr("class", "axis")
+            //position of x-axis
+            .attr("transform", "translate(" + (margin.left -padding) +"," + (height - padding) + ")")
+            .call(xAxis);
+
+        //Add y-axis
+        var dy = "0.1em";
+        svg.append("g")
+            .attr("class", "y axis")
+            //position of y-axis
+            .attr("transform", "translate(" + (margin.left + padding) + ",0)")
+            .call(yAxis)
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 10)
+            .attr("dy", dy)
+            .attr("x", -40)
+            .style("text-anchor", "end")
+            .text("Score");
+
+
+    }
 
     //Bar chart with label, color range, scaling, axis
     function drawStandBar(){
