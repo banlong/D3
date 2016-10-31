@@ -11,7 +11,7 @@
 
     //drawStandBar();
     drawBubble();
-    //drawBubble1();
+    drawBubble1();
     //drawTextSimpleLineChart();
     //drawTextMultiLineChart();
 
@@ -629,8 +629,9 @@
             {fill: "yellow", stroke: "orange", text :"black"},
             {fill: "grey"  , stroke: "blue",   text :"white"}
         ];
+
+        //var xData = ["A", "B", "C","D"];
         var xData = ["A", "B", "C","D", "E", "F","G", "H", "I", "J"];
-        //var yData = [20, 90, 50, 33, 95,  12, 44, 67, 21, 88];
 
 
 
@@ -648,16 +649,18 @@
 
         // add some padding, when padding = 0 some elements were cut off.
         // Using padding to define the area  of displaying chart
-        var padding = 20;
+        var innerPad = 0.00;        //no inner padding
+        var outerPad = 0.50;        //outer pad = 50% tick size
+        var topPad = 30;            //top padding
 
         //Define scales
         var xScale = d3.scale.ordinal()
             .domain(xData)
-            .rangeRoundBands([margin.left, width-padding], 0.5);
+            .rangeRoundBands([margin.left, width], innerPad, outerPad);
 
         var yScale = d3.scale.linear()
             .domain([0, d3.max(dataset, function(d) { return d[1]; })])
-            .range([height - padding, 2*padding]);
+            .range([height - topPad, 2*topPad]);
 
         var rScale = d3.scale.linear()
             .domain([0, d3.max(dataset, function(d) { return d[1]; })])
@@ -694,6 +697,8 @@
         //        .tickFormat("")
         //);
 
+        var tickDistance =  xScale(dataset[1][0])-xScale(dataset[0][0]);
+        var leftPadInPixel = tickDistance/2 + topPad;
         //Add vertical lines
         svg.selectAll("line")
             .data(dataset)
@@ -701,12 +706,12 @@
             .append("line")          // attach a line
             .style("stroke", "lightgrey")  // colour the line
             .attr("x1", function(d) {
-                return 2*padding - 7 + xScale(d[0])})     // x position of the first end of the line
+                return leftPadInPixel + xScale(d[0])})     // x position of the first end of the line
             .attr("y1", function(d) {
                 return  yScale(d[1]) + rScale(d[1]) + 2 })      // y position of the first end of the line
             .attr("x2", function(d) {
-                return 2*padding - 7 + xScale(d[0])})     // x position of the second end of the line
-            .attr("y2", height - padding);
+                return leftPadInPixel + xScale(d[0])})     // x position of the second end of the line
+            .attr("y2", height - topPad);
 
 
         //Add bubbles
@@ -715,8 +720,7 @@
             .enter()
             .append("circle")
             .attr("cx", function (d) {
-                return (2*padding - 7 + xScale(d[0]));
-                //return (margin.left + xScale(d[0]));
+                return (leftPadInPixel + xScale(d[0]));
             })
             .attr("cy", function (d) {
                 return yScale(d[1]);
@@ -750,7 +754,7 @@
             })
             .attr("x", function (d) {
                 var textWidth = this.getComputedTextLength();
-                return 2*padding - 7 - textWidth/2  + xScale(d[0]) ;
+                return leftPadInPixel - textWidth/2  + xScale(d[0]) ;
             })
             .attr("y", function (d) {
                 return yScale(d[1]) + 5;
@@ -768,7 +772,7 @@
             .attr("class", "axis")
             //position of x-axis
             //.attr("transform", "translate(" + (margin.left - padding) +"," + (height - padding) + ")")
-            .attr("transform", "translate(" + padding +"," + (height - padding) + ")")
+            .attr("transform", "translate(" + topPad +"," + (height - topPad) + ")")
             .call(xAxis);
 
         //Add y-axis
@@ -776,7 +780,7 @@
         svg.append("g")
             .attr("class", "y axis")
             //position of y-axis
-            .attr("transform", "translate(" + (margin.left + padding) + ",0)")
+            .attr("transform", "translate(" + (margin.left + topPad) + ",0)")
             .call(yAxis)
             .append("text")
             .attr("transform", "rotate(-90)")
