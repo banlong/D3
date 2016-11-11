@@ -48,3 +48,5 @@ Serving HTTP on 0.0.0.0 port 8888 ...
 127.0.0.1 - - [26/Oct/2016 12:03:27] "GET /js/div.js HTTP/1.1" 200 -
 127.0.0.1 - - [26/Oct/2016 12:03:27] code 404, message File not found
 127.0.0.1 - - [26/Oct/2016 12:03:27] "GET /favicon.ico HTTP/1.1" 404 -
+
+Can also use httpster at the root directory

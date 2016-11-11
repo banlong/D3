@@ -6,14 +6,18 @@
     //This using v3
     //drawDiv();
     //drawSVG();
+    //saveSVG();
+    //createSVG();
     //drawBarChart();
     //drawBarChartWithScale();
 
     //drawStandBar();
-    drawBubble();
-    drawBubble1();
+   // drawBubble();
+    //drawBubble1();
     //drawTextSimpleLineChart();
     //drawTextMultiLineChart();
+
+    drawGaul()
 
     //X-data is text
     function drawTextMultiLineChart(){

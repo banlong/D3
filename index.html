@@ -4,11 +4,28 @@
     <meta charset="utf-8">
     <title>D3 Page Template</title>
     <script type="text/javascript" src="d3/d3.v3.min.js"></script>
-    <!--<script type="text/javascript"  src="js/d3-time-format.min.js"></script>-->
+    <script type="text/javascript"  src="d3/svgsaver.min.js"></script>
+    <script type="text/javascript"  src="js/pdf.js"></script>
     <link rel="stylesheet" type="text/css" href="css/div.css"/>
+
+    <style>
+        .liquidFillGaugeText { font-family: Helvetica; font-weight: bold; }
+    </style>
 
 </head>
 <body>
-<script type="text/javascript" src="js/div.js"></script>
+
+
+    <svg id="fillgauge1" width="16%" height="100" fill-opacity="1.0" onclick="gauge1.update(NewValue());"></svg>
+    <svg id="fillgauge2" width="16%" height="100" fill-opacity="0.9" onclick="gauge2.update(NewValue());"></svg>
+    <svg id="fillgauge3" width="16%" height="100" fill-opacity="0.8" onclick="gauge3.update(NewValue());"></svg>
+    <svg id="fillgauge4" width="16%" height="100" fill-opacity="0.7" onclick="gauge4.update(NewValue());"></svg>
+    <svg id="fillgauge5" width="16%" height="100" fill-opacity="0.6" onclick="gauge5.update(NewValue());"></svg>
+    <svg id="fillgauge6" width="16%" height="100" fill-opacity="0.5" onclick="gauge6.update(NewValue());"></svg>
+
+    <script type="text/javascript"  src="js/gaul.js"></script>
+    <script src="js/liquidFillGauge.js" language="JavaScript"></script>
+    <script type="text/javascript" src="js/div.js"></script>
+
 </body>
 </html>

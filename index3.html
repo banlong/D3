@@ -1,0 +1,671 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=1000">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@mbostock">
+    <meta property="og:url" content="http://bl.ocks.org/brattonc/5e5ce9beee483220e2f6">
+    <meta property="og:title" content="D3 Liquid Fill Gauge">
+    <meta property="og:description" content="Curtis Bratton’s Block 5e5ce9beee483220e2f6">
+    <title>D3 Liquid Fill Gauge - bl.ocks.org</title>
+    <link rel="icon" href="/favicon.png">
+    <style>
+
+        @import url("/style.css");
+
+    </style>
+
+</head>
+<body>
+<header>
+    <div class="column">
+        <div class="navigation">
+            <a href="/">Popular</a>
+            / <a href="/-/about">About</a>
+        </div>
+        <a class="user" href="/brattonc"><img class="avatar"
+                                              src="https://avatars.githubusercontent.com/u/11392644?v=3&amp;s=60"
+                                              width="30" height="30">Curtis Bratton</a>’s
+        Block <a class="gist gist-id self" title="View Gist on GitHub."
+                 href="https://gist.github.com/brattonc/5e5ce9beee483220e2f6">5e5ce9beee483220e2f6</a>
+
+        <div class="date">Updated November 3, 2016</div>
+    </div>
+</header>
+
+<div class="column">
+    <h1>D3 Liquid Fill Gauge</h1>
+
+    <div class="index">
+        <iframe sandbox="allow-popups allow-scripts allow-forms allow-same-origin"
+                src="/brattonc/raw/5e5ce9beee483220e2f6/4c2e1e4b0ed515d9d9de26d0996519fc16c2ae43/" marginwidth="0"
+                marginheight="0" style="height:500px;" scrolling="no"></iframe>
+    </div>
+    <div class="index-pop">
+        <a target="_blank" title="Open Block 5e5ce9beee483220e2f6 a new window."
+           href="/brattonc/raw/5e5ce9beee483220e2f6">Open
+            <svg height="16" width="12">
+                <path d="M11 10h1v3c0 0.55-0.45 1-1 1H1c-0.55 0-1-0.45-1-1V3c0-0.55 0.45-1 1-1h3v1H1v10h10V10zM6 2l2.25 2.25-3.25 3.25 1.5 1.5 3.25-3.25 2.25 2.25V2H6z"></path>
+            </svg>
+        </a>
+    </div>
+    <div class="gist-readme" data-key="README.md"><p>Liquid Fill Gauge v1.1 - 7/14/2015</p>
+
+        <p>Changes:</p>
+
+        <ul>
+            <li>Added support for updating the gauge value after loading is complete. The loadLiquidFillGauge method now
+                returns an object with an update method which allows the gauge value to be changed. Click any of the
+                gauges above to randomly update their value.
+            </li>
+        </ul>
+
+        <p>Configurable features include:</p>
+
+        <ul>
+            <li>Changeable min/max values.</li>
+            <li>All colors.</li>
+            <li>Outer circle thickness.</li>
+            <li>Gap between the outer circle and inner fill area.</li>
+            <li>Wave height.</li>
+            <li>Wave speed.</li>
+            <li>Wave count.</li>
+            <li>Wave rise time.</li>
+            <li>Wave height scaling on/off. Reduces the wave height near the min/max values so that the wave won't make
+                the fill area appear total full or totally empty.
+            </li>
+            <li>Wave starting offset. Most useful when wave animation is turned off and you want the wave min or max at
+                a specific horizontal position in the fill area.
+            </li>
+            <li>Wave rising upon load on/off.</li>
+            <li>Wave animation on/off.</li>
+            <li>Text height.</li>
+            <li>Text vertical position.</li>
+            <li>Text increment from min value upon loading.</li>
+            <li>Display of % symbol on/off.</li>
+        </ul>
+
+        <p>Open source under <a href="http://choosealicense.com/licenses/bsd-2-clause/">BSD 2-clause</a> <br>
+            Copyright (c) 2015, Curtis Bratton <br>
+            All rights reserved.</p></div>
+    <div class="gist-sources">
+        <div class="gist-source" data-key="index.html">
+            <h2>index.html<a name="index.html" class="anchor" href="#index.html">#</a></h2>
+      <pre><code class="html xml"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+          <span class="tag">&lt;<span class="title">html</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">head</span> <span class="attribute">lang</span>=<span class="value">"en"</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span
+                  class="value">"UTF-8"</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">title</span>&gt;</span><span class="tag">&lt;/<span class="title">title</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span
+                  class="value">"http://d3js.org/d3.v3.min.js"</span> <span class="attribute">language</span>=<span
+                  class="value">"JavaScript"</span>&gt;</span><span class="javascript"></span><span
+                  class="tag">&lt;/<span class="title">script</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span
+                  class="value">"liquidFillGauge.js"</span> <span class="attribute">language</span>=<span class="value">"JavaScript"</span>&gt;</span><span
+                  class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">style</span>&gt;</span><span class="css">
+        <span class="class">.liquidFillGaugeText</span> <span class="rules">{ <span class="rule"><span
+                  class="attribute">font-family</span>:<span class="value"> Helvetica</span>;</span> <span class="rule"><span
+                  class="attribute">font-weight</span>:<span class="value"> bold</span>;</span> <span
+                  class="rule">}</span></span>
+    </span><span class="tag">&lt;/<span class="title">style</span>&gt;</span>
+          <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">svg</span> <span class="attribute">id</span>=<span class="value">"fillgauge1"</span> <span
+                  class="attribute">width</span>=<span class="value">"97%"</span> <span class="attribute">height</span>=<span
+                  class="value">"250"</span> <span class="attribute">onclick</span>=<span class="value">"gauge1.update(NewValue());"</span>&gt;</span><span
+                  class="tag">&lt;/<span class="title">svg</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">svg</span> <span class="attribute">id</span>=<span class="value">"fillgauge2"</span> <span
+                  class="attribute">width</span>=<span class="value">"19%"</span> <span class="attribute">height</span>=<span
+                  class="value">"200"</span> <span class="attribute">onclick</span>=<span class="value">"gauge2.update(NewValue());"</span>&gt;</span><span
+                  class="tag">&lt;/<span class="title">svg</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">svg</span> <span class="attribute">id</span>=<span class="value">"fillgauge3"</span> <span
+                  class="attribute">width</span>=<span class="value">"19%"</span> <span class="attribute">height</span>=<span
+                  class="value">"200"</span> <span class="attribute">onclick</span>=<span class="value">"gauge3.update(NewValue());"</span>&gt;</span><span
+                  class="tag">&lt;/<span class="title">svg</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">svg</span> <span class="attribute">id</span>=<span class="value">"fillgauge4"</span> <span
+                  class="attribute">width</span>=<span class="value">"19%"</span> <span class="attribute">height</span>=<span
+                  class="value">"200"</span> <span class="attribute">onclick</span>=<span class="value">"gauge4.update(NewValue());"</span>&gt;</span><span
+                  class="tag">&lt;/<span class="title">svg</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">svg</span> <span class="attribute">id</span>=<span class="value">"fillgauge5"</span> <span
+                  class="attribute">width</span>=<span class="value">"19%"</span> <span class="attribute">height</span>=<span
+                  class="value">"200"</span> <span class="attribute">onclick</span>=<span class="value">"gauge5.update(NewValue());"</span>&gt;</span><span
+                  class="tag">&lt;/<span class="title">svg</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">svg</span> <span class="attribute">id</span>=<span class="value">"fillgauge6"</span> <span
+                  class="attribute">width</span>=<span class="value">"19%"</span> <span class="attribute">height</span>=<span
+                  class="value">"200"</span> <span class="attribute">onclick</span>=<span class="value">"gauge6.update(NewValue());"</span>&gt;</span><span
+                  class="tag">&lt;/<span class="title">svg</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">script</span> <span class="attribute">language</span>=<span
+                  class="value">"JavaScript"</span>&gt;</span><span class="javascript">
+    <span class="keyword">var</span> gauge1 = loadLiquidFillGauge(<span class="string">"fillgauge1"</span>, <span
+                  class="number">55</span>);
+    <span class="keyword">var</span> config1 = liquidFillGaugeDefaultSettings();
+    config1.circleColor = <span class="string">"#FF7777"</span>;
+    config1.textColor = <span class="string">"#FF4444"</span>;
+    config1.waveTextColor = <span class="string">"#FFAAAA"</span>;
+    config1.waveColor = <span class="string">"#FFDDDD"</span>;
+    config1.circleThickness = <span class="number">0.2</span>;
+    config1.textVertPosition = <span class="number">0.2</span>;
+    config1.waveAnimateTime = <span class="number">1000</span>;
+    <span class="keyword">var</span> gauge2= loadLiquidFillGauge(<span class="string">"fillgauge2"</span>, <span
+                  class="number">28</span>, config1);
+    <span class="keyword">var</span> config2 = liquidFillGaugeDefaultSettings();
+    config2.circleColor = <span class="string">"#D4AB6A"</span>;
+    config2.textColor = <span class="string">"#553300"</span>;
+    config2.waveTextColor = <span class="string">"#805615"</span>;
+    config2.waveColor = <span class="string">"#AA7D39"</span>;
+    config2.circleThickness = <span class="number">0.1</span>;
+    config2.circleFillGap = <span class="number">0.2</span>;
+    config2.textVertPosition = <span class="number">0.8</span>;
+    config2.waveAnimateTime = <span class="number">2000</span>;
+    config2.waveHeight = <span class="number">0.3</span>;
+    config2.waveCount = <span class="number">1</span>;
+    <span class="keyword">var</span> gauge3 = loadLiquidFillGauge(<span class="string">"fillgauge3"</span>, <span
+                  class="number">60.1</span>, config2);
+    <span class="keyword">var</span> config3 = liquidFillGaugeDefaultSettings();
+    config3.textVertPosition = <span class="number">0.8</span>;
+    config3.waveAnimateTime = <span class="number">5000</span>;
+    config3.waveHeight = <span class="number">0.15</span>;
+    config3.waveAnimate = <span class="literal">false</span>;
+    config3.waveOffset = <span class="number">0.25</span>;
+    config3.valueCountUp = <span class="literal">false</span>;
+    config3.displayPercent = <span class="literal">false</span>;
+    <span class="keyword">var</span> gauge4 = loadLiquidFillGauge(<span class="string">"fillgauge4"</span>, <span
+                  class="number">50</span>, config3);
+    <span class="keyword">var</span> config4 = liquidFillGaugeDefaultSettings();
+    config4.circleThickness = <span class="number">0.15</span>;
+    config4.circleColor = <span class="string">"#808015"</span>;
+    config4.textColor = <span class="string">"#555500"</span>;
+    config4.waveTextColor = <span class="string">"#FFFFAA"</span>;
+    config4.waveColor = <span class="string">"#AAAA39"</span>;
+    config4.textVertPosition = <span class="number">0.8</span>;
+    config4.waveAnimateTime = <span class="number">1000</span>;
+    config4.waveHeight = <span class="number">0.05</span>;
+    config4.waveAnimate = <span class="literal">true</span>;
+    config4.waveRise = <span class="literal">false</span>;
+    config4.waveHeightScaling = <span class="literal">false</span>;
+    config4.waveOffset = <span class="number">0.25</span>;
+    config4.textSize = <span class="number">0.75</span>;
+    config4.waveCount = <span class="number">3</span>;
+    <span class="keyword">var</span> gauge5 = loadLiquidFillGauge(<span class="string">"fillgauge5"</span>, <span
+                  class="number">60.44</span>, config4);
+    <span class="keyword">var</span> config5 = liquidFillGaugeDefaultSettings();
+    config5.circleThickness = <span class="number">0.4</span>;
+    config5.circleColor = <span class="string">"#6DA398"</span>;
+    config5.textColor = <span class="string">"#0E5144"</span>;
+    config5.waveTextColor = <span class="string">"#6DA398"</span>;
+    config5.waveColor = <span class="string">"#246D5F"</span>;
+    config5.textVertPosition = <span class="number">0.52</span>;
+    config5.waveAnimateTime = <span class="number">5000</span>;
+    config5.waveHeight = <span class="number">0</span>;
+    config5.waveAnimate = <span class="literal">false</span>;
+    config5.waveCount = <span class="number">2</span>;
+    config5.waveOffset = <span class="number">0.25</span>;
+    config5.textSize = <span class="number">1.2</span>;
+    config5.minValue = <span class="number">30</span>;
+    config5.maxValue = <span class="number">150</span>
+    config5.displayPercent = <span class="literal">false</span>;
+    <span class="keyword">var</span> gauge6 = loadLiquidFillGauge(<span class="string">"fillgauge6"</span>, <span
+                  class="number">120</span>, config5);
+
+    <span class="function"><span class="keyword">function</span> <span class="title">NewValue</span><span
+            class="params">()</span>{</span>
+        <span class="keyword">if</span>(Math.random() &gt; .<span class="number">5</span>){
+            <span class="keyword">return</span> Math.round(Math.random()*<span class="number">100</span>);
+        } <span class="keyword">else</span> {
+            <span class="keyword">return</span> (Math.random()*<span class="number">100</span>).toFixed(<span
+                  class="number">1</span>);
+        }
+    }
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+          <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+          <span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></pre>
+        </div>
+        <div class="gist-source" data-key="liquidFillGauge.js">
+            <h2>liquidFillGauge.js<a name="liquidFillGauge.js" class="anchor" href="#liquidFillGauge.js">#</a></h2>
+      <pre><code class="javascript"><span class="comment">/*!
+ * @license Open source under BSD 2-clause (http://choosealicense.com/licenses/bsd-2-clause/)
+ * Copyright (c) 2015, Curtis Bratton
+ * All rights reserved.
+ *
+ * Liquid Fill Gauge v1.1
+ */</span>
+          <span class="function"><span class="keyword">function</span> <span class="title">liquidFillGaugeDefaultSettings</span><span
+                  class="params">()</span>{</span>
+          <span class="keyword">return</span> {
+          minValue: <span class="number">0</span>, <span class="comment">// The gauge minimum value.</span>
+          maxValue: <span class="number">100</span>, <span class="comment">// The gauge maximum value.</span>
+          circleThickness: <span class="number">0.05</span>, <span class="comment">// The outer circle thickness as a percentage of it's radius.</span>
+          circleFillGap: <span class="number">0.05</span>, <span class="comment">// The size of the gap between the outer circle and wave circle as a percentage of the outer circles radius.</span>
+          circleColor: <span class="string">"#178BCA"</span>, <span
+                  class="comment">// The color of the outer circle.</span>
+          waveHeight: <span class="number">0.05</span>, <span class="comment">// The wave height as a percentage of the radius of the wave circle.</span>
+          waveCount: <span class="number">1</span>, <span class="comment">// The number of full waves per width of the wave circle.</span>
+          waveRiseTime: <span class="number">1000</span>, <span class="comment">// The amount of time in milliseconds for the wave to rise from 0 to it's final height.</span>
+          waveAnimateTime: <span class="number">18000</span>, <span class="comment">// The amount of time in milliseconds for a full wave to enter the wave circle.</span>
+          waveRise: <span class="literal">true</span>, <span class="comment">// Control if the wave should rise from 0 to it's full height, or start at it's full height.</span>
+          waveHeightScaling: <span class="literal">true</span>, <span class="comment">// Controls wave size scaling at low and high fill percentages. When true, wave height reaches it's maximum at 50% fill, and minimum at 0% and 100% fill. This helps to prevent the wave from making the wave circle from appear totally full or empty when near it's minimum or maximum fill.</span>
+          waveAnimate: <span class="literal">true</span>, <span class="comment">// Controls if the wave scrolls or is static.</span>
+          waveColor: <span class="string">"#178BCA"</span>, <span class="comment">// The color of the fill wave.</span>
+          waveOffset: <span class="number">0</span>, <span class="comment">// The amount to initially offset the wave. 0 = no offset. 1 = offset of one full wave.</span>
+          textVertPosition: .<span class="number">5</span>, <span class="comment">// The height at which to display the percentage text withing the wave circle. 0 = bottom, 1 = top.</span>
+          textSize: <span class="number">1</span>, <span class="comment">// The relative height of the text to display in the wave circle. 1 = 50%</span>
+          valueCountUp: <span class="literal">true</span>, <span class="comment">// If true, the displayed value counts up from 0 to it's final value upon loading. If false, the final value is displayed.</span>
+          displayPercent: <span class="literal">true</span>, <span class="comment">// If true, a % symbol is displayed after the value.</span>
+          textColor: <span class="string">"#045681"</span>, <span class="comment">// The color of the value text when the wave does not overlap it.</span>
+          waveTextColor: <span class="string">"#A4DBf8"</span> <span class="comment">// The color of the value text when the wave overlaps it.</span>
+          };
+          }
+
+          <span class="function"><span class="keyword">function</span> <span
+                  class="title">loadLiquidFillGauge</span><span
+                  class="params">(elementId, value, config)</span> {</span>
+          <span class="keyword">if</span>(config == <span class="literal">null</span>) config =
+          liquidFillGaugeDefaultSettings();
+
+          <span class="keyword">var</span> gauge = d3.select(<span class="string">"#"</span> + elementId);
+          <span class="keyword">var</span> radius = Math.min(parseInt(gauge.style(<span class="string">"width"</span>)),
+          parseInt(gauge.style(<span class="string">"height"</span>)))/<span class="number">2</span>;
+          <span class="keyword">var</span> locationX = parseInt(gauge.style(<span class="string">"width"</span>))/<span
+                  class="number">2</span> - radius;
+          <span class="keyword">var</span> locationY = parseInt(gauge.style(<span class="string">"height"</span>))/<span
+                  class="number">2</span> - radius;
+          <span class="keyword">var</span> fillPercent = Math.max(config.minValue, Math.min(config.maxValue,
+          value))/config.maxValue;
+
+          <span class="keyword">var</span> waveHeightScale;
+          <span class="keyword">if</span>(config.waveHeightScaling){
+          waveHeightScale = d3.scale.linear()
+          .range([<span class="number">0</span>,config.waveHeight,<span class="number">0</span>])
+          .domain([<span class="number">0</span>,<span class="number">50</span>,<span class="number">100</span>]);
+          } <span class="keyword">else</span> {
+          waveHeightScale = d3.scale.linear()
+          .range([config.waveHeight,config.waveHeight])
+          .domain([<span class="number">0</span>,<span class="number">100</span>]);
+          }
+
+          <span class="keyword">var</span> textPixels = (config.textSize*radius/<span class="number">2</span>);
+          <span class="keyword">var</span> textFinalValue = parseFloat(value).toFixed(<span class="number">2</span>);
+          <span class="keyword">var</span> textStartValue = config.valueCountUp?config.minValue:textFinalValue;
+          <span class="keyword">var</span> percentText = config.displayPercent?<span class="string">"%"</span>:<span
+                  class="string">""</span>;
+          <span class="keyword">var</span> circleThickness = config.circleThickness * radius;
+          <span class="keyword">var</span> circleFillGap = config.circleFillGap * radius;
+          <span class="keyword">var</span> fillCircleMargin = circleThickness + circleFillGap;
+          <span class="keyword">var</span> fillCircleRadius = radius - fillCircleMargin;
+          <span class="keyword">var</span> waveHeight = fillCircleRadius*waveHeightScale(fillPercent*<span
+                  class="number">100</span>);
+
+          <span class="keyword">var</span> waveLength = fillCircleRadius*<span class="number">2</span>/config.waveCount;
+          <span class="keyword">var</span> waveClipCount = <span class="number">1</span>+config.waveCount;
+          <span class="keyword">var</span> waveClipWidth = waveLength*waveClipCount;
+
+          <span class="comment">// Rounding functions so that the correct number of decimal places is always displayed as the value counts up.</span>
+          <span class="keyword">var</span> textRounder = <span class="function"><span
+                  class="keyword">function</span><span class="params">(value)</span>{</span> <span class="keyword">return</span>
+          Math.round(value); };
+          <span class="keyword">if</span>(parseFloat(textFinalValue) != parseFloat(textRounder(textFinalValue))){
+          textRounder = <span class="function"><span class="keyword">function</span><span class="params">(value)</span>{</span>
+          <span class="keyword">return</span> parseFloat(value).toFixed(<span class="number">1</span>); };
+          }
+          <span class="keyword">if</span>(parseFloat(textFinalValue) != parseFloat(textRounder(textFinalValue))){
+          textRounder = <span class="function"><span class="keyword">function</span><span class="params">(value)</span>{</span>
+          <span class="keyword">return</span> parseFloat(value).toFixed(<span class="number">2</span>); };
+          }
+
+          <span class="comment">// Data for building the clip wave area.</span>
+          <span class="keyword">var</span> data = [];
+          <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt;=
+          <span class="number">40</span>*waveClipCount; i++){
+          data.push({x: i/(<span class="number">40</span>*waveClipCount), y: (i/(<span class="number">40</span>))});
+          }
+
+          <span class="comment">// Scales for drawing the outer circle.</span>
+          <span class="keyword">var</span> gaugeCircleX = d3.scale.linear().range([<span class="number">0</span>,<span
+                  class="number">2</span>*Math.PI]).domain([<span class="number">0</span>,<span class="number">1</span>]);
+          <span class="keyword">var</span> gaugeCircleY = d3.scale.linear().range([<span class="number">0</span>,radius]).domain([<span
+                  class="number">0</span>,radius]);
+
+          <span class="comment">// Scales for controlling the size of the clipping path.</span>
+          <span class="keyword">var</span> waveScaleX = d3.scale.linear().range([<span class="number">0</span>,waveClipWidth]).domain([<span
+                  class="number">0</span>,<span class="number">1</span>]);
+          <span class="keyword">var</span> waveScaleY = d3.scale.linear().range([<span class="number">0</span>,waveHeight]).domain([<span
+                  class="number">0</span>,<span class="number">1</span>]);
+
+          <span class="comment">// Scales for controlling the position of the clipping path.</span>
+          <span class="keyword">var</span> waveRiseScale = d3.scale.linear()
+          <span class="comment">// The clipping area size is the height of the fill circle + the wave height, so we position the clip wave</span>
+          <span class="comment">// such that the it will overlap the fill circle at all when at 0%, and will totally cover the fill</span>
+          <span class="comment">// circle at 100%.</span>
+          .range([(fillCircleMargin+fillCircleRadius*<span class="number">2</span>+waveHeight),(fillCircleMargin-waveHeight)])
+          .domain([<span class="number">0</span>,<span class="number">1</span>]);
+          <span class="keyword">var</span> waveAnimateScale = d3.scale.linear()
+          .range([<span class="number">0</span>, waveClipWidth-fillCircleRadius*<span class="number">2</span>]) <span
+                  class="comment">// Push the clip area one full wave then snap back.</span>
+          .domain([<span class="number">0</span>,<span class="number">1</span>]);
+
+          <span class="comment">// Scale for controlling the position of the text within the gauge.</span>
+          <span class="keyword">var</span> textRiseScaleY = d3.scale.linear()
+          .range([fillCircleMargin+fillCircleRadius*<span class="number">2</span>,(fillCircleMargin+textPixels*<span
+                  class="number">0.7</span>)])
+          .domain([<span class="number">0</span>,<span class="number">1</span>]);
+
+          <span class="comment">// Center the gauge within the parent SVG.</span>
+          <span class="keyword">var</span> gaugeGroup = gauge.append(<span class="string">"g"</span>)
+          .attr(<span class="string">'transform'</span>,<span class="string">'translate('</span>+locationX+<span
+                  class="string">','</span>+locationY+<span class="string">')'</span>);
+
+          <span class="comment">// Draw the outer circle.</span>
+          <span class="keyword">var</span> gaugeCircleArc = d3.svg.arc()
+          .startAngle(gaugeCircleX(<span class="number">0</span>))
+          .endAngle(gaugeCircleX(<span class="number">1</span>))
+          .outerRadius(gaugeCircleY(radius))
+          .innerRadius(gaugeCircleY(radius-circleThickness));
+          gaugeGroup.append(<span class="string">"path"</span>)
+          .attr(<span class="string">"d"</span>, gaugeCircleArc)
+          .style(<span class="string">"fill"</span>, config.circleColor)
+          .attr(<span class="string">'transform'</span>,<span class="string">'translate('</span>+radius+<span
+                  class="string">','</span>+radius+<span class="string">')'</span>);
+
+          <span class="comment">// Text where the wave does not overlap.</span>
+          <span class="keyword">var</span> text1 = gaugeGroup.append(<span class="string">"text"</span>)
+          .text(textRounder(textStartValue) + percentText)
+          .attr(<span class="string">"class"</span>, <span class="string">"liquidFillGaugeText"</span>)
+          .attr(<span class="string">"text-anchor"</span>, <span class="string">"middle"</span>)
+          .attr(<span class="string">"font-size"</span>, textPixels + <span class="string">"px"</span>)
+          .style(<span class="string">"fill"</span>, config.textColor)
+          .attr(<span class="string">'transform'</span>,<span class="string">'translate('</span>+radius+<span
+                  class="string">','</span>+textRiseScaleY(config.textVertPosition)+<span class="string">')'</span>);
+
+          <span class="comment">// The clipping wave area.</span>
+          <span class="keyword">var</span> clipArea = d3.svg.area()
+          .x(<span class="function"><span class="keyword">function</span><span class="params">(d)</span> {</span> <span
+                  class="keyword">return</span> waveScaleX(d.x); } )
+          .y0(<span class="function"><span class="keyword">function</span><span class="params">(d)</span> {</span> <span
+                  class="keyword">return</span> waveScaleY(Math.sin(Math.PI*<span class="number">2</span>*config.waveOffset*-<span
+                  class="number">1</span> + Math.PI*<span class="number">2</span>*(<span class="number">1</span>-config.waveCount)
+          + d.y*<span class="number">2</span>*Math.PI));} )
+          .y1(<span class="function"><span class="keyword">function</span><span class="params">(d)</span> {</span> <span
+                  class="keyword">return</span> (fillCircleRadius*<span class="number">2</span> + waveHeight); } );
+          <span class="keyword">var</span> waveGroup = gaugeGroup.append(<span class="string">"defs"</span>)
+          .append(<span class="string">"clipPath"</span>)
+          .attr(<span class="string">"id"</span>, <span class="string">"clipWave"</span> + elementId);
+          <span class="keyword">var</span> wave = waveGroup.append(<span class="string">"path"</span>)
+          .datum(data)
+          .attr(<span class="string">"d"</span>, clipArea)
+          .attr(<span class="string">"T"</span>, <span class="number">0</span>);
+
+          <span class="comment">// The inner circle with the clipping wave attached.</span>
+          <span class="keyword">var</span> fillCircleGroup = gaugeGroup.append(<span class="string">"g"</span>)
+          .attr(<span class="string">"clip-path"</span>, <span class="string">"url(#clipWave"</span> + elementId + <span
+                  class="string">")"</span>);
+          fillCircleGroup.append(<span class="string">"circle"</span>)
+          .attr(<span class="string">"cx"</span>, radius)
+          .attr(<span class="string">"cy"</span>, radius)
+          .attr(<span class="string">"r"</span>, fillCircleRadius)
+          .style(<span class="string">"fill"</span>, config.waveColor);
+
+          <span class="comment">// Text where the wave does overlap.</span>
+          <span class="keyword">var</span> text2 = fillCircleGroup.append(<span class="string">"text"</span>)
+          .text(textRounder(textStartValue) + percentText)
+          .attr(<span class="string">"class"</span>, <span class="string">"liquidFillGaugeText"</span>)
+          .attr(<span class="string">"text-anchor"</span>, <span class="string">"middle"</span>)
+          .attr(<span class="string">"font-size"</span>, textPixels + <span class="string">"px"</span>)
+          .style(<span class="string">"fill"</span>, config.waveTextColor)
+          .attr(<span class="string">'transform'</span>,<span class="string">'translate('</span>+radius+<span
+                  class="string">','</span>+textRiseScaleY(config.textVertPosition)+<span class="string">')'</span>);
+
+          <span class="comment">// Make the value count up.</span>
+          <span class="keyword">if</span>(config.valueCountUp){
+          <span class="keyword">var</span> textTween = <span class="function"><span class="keyword">function</span><span
+                  class="params">()</span>{</span>
+          <span class="keyword">var</span> i = d3.interpolate(<span class="keyword">this</span>.textContent,
+          textFinalValue);
+          <span class="keyword">return</span> <span class="function"><span class="keyword">function</span><span
+                  class="params">(t)</span> {</span> <span class="keyword">this</span>.textContent = textRounder(i(t)) +
+          percentText; }
+          };
+          text1.transition()
+          .duration(config.waveRiseTime)
+          .tween(<span class="string">"text"</span>, textTween);
+          text2.transition()
+          .duration(config.waveRiseTime)
+          .tween(<span class="string">"text"</span>, textTween);
+          }
+
+          <span class="comment">// Make the wave rise. wave and waveGroup are separate so that horizontal and vertical movement can be controlled independently.</span>
+          <span class="keyword">var</span> waveGroupXPosition = fillCircleMargin+fillCircleRadius*<span
+                  class="number">2</span>-waveClipWidth;
+          <span class="keyword">if</span>(config.waveRise){
+          waveGroup.attr(<span class="string">'transform'</span>,<span class="string">'translate('</span>+waveGroupXPosition+<span
+                  class="string">','</span>+waveRiseScale(<span class="number">0</span>)+<span class="string">')'</span>)
+          .transition()
+          .duration(config.waveRiseTime)
+          .attr(<span class="string">'transform'</span>,<span
+                  class="string">'translate('</span>+waveGroupXPosition+<span class="string">','</span>+waveRiseScale(fillPercent)+<span
+                  class="string">')'</span>)
+          .each(<span class="string">"start"</span>, <span class="function"><span class="keyword">function</span><span
+                  class="params">()</span>{</span> wave.attr(<span class="string">'transform'</span>,<span
+                  class="string">'translate(1,0)'</span>); }); <span class="comment">// This transform is necessary to get the clip wave positioned correctly when waveRise=true and waveAnimate=false. The wave will not position correctly without this, but it's not clear why this is actually necessary.</span>
+          } <span class="keyword">else</span> {
+          waveGroup.attr(<span class="string">'transform'</span>,<span class="string">'translate('</span>+waveGroupXPosition+<span
+                  class="string">','</span>+waveRiseScale(fillPercent)+<span class="string">')'</span>);
+          }
+
+          <span class="keyword">if</span>(config.waveAnimate) animateWave();
+
+          <span class="function"><span class="keyword">function</span> <span class="title">animateWave</span><span
+                  class="params">()</span> {</span>
+          wave.attr(<span class="string">'transform'</span>,<span class="string">'translate('</span>+waveAnimateScale(wave.attr(<span
+                  class="string">'T'</span>))+<span class="string">',0)'</span>);
+          wave.transition()
+          .duration(config.waveAnimateTime * (<span class="number">1</span>-wave.attr(<span class="string">'T'</span>)))
+          .ease(<span class="string">'linear'</span>)
+          .attr(<span class="string">'transform'</span>,<span class="string">'translate('</span>+waveAnimateScale(<span
+                  class="number">1</span>)+<span class="string">',0)'</span>)
+          .attr(<span class="string">'T'</span>, <span class="number">1</span>)
+          .each(<span class="string">'end'</span>, <span class="function"><span class="keyword">function</span><span
+                  class="params">()</span>{</span>
+          wave.attr(<span class="string">'T'</span>, <span class="number">0</span>);
+          animateWave(config.waveAnimateTime);
+          });
+          }
+
+          <span class="function"><span class="keyword">function</span> <span class="title">GaugeUpdater</span><span
+                  class="params">()</span>{</span>
+          <span class="keyword">this</span>.update = <span class="function"><span class="keyword">function</span><span
+                  class="params">(value)</span>{</span>
+          <span class="keyword">var</span> newFinalValue = parseFloat(value).toFixed(<span class="number">2</span>);
+          <span class="keyword">var</span> textRounderUpdater = <span class="function"><span
+                  class="keyword">function</span><span class="params">(value)</span>{</span> <span class="keyword">return</span>
+          Math.round(value); };
+          <span class="keyword">if</span>(parseFloat(newFinalValue) != parseFloat(textRounderUpdater(newFinalValue))){
+          textRounderUpdater = <span class="function"><span class="keyword">function</span><span
+                  class="params">(value)</span>{</span> <span class="keyword">return</span>
+          parseFloat(value).toFixed(<span class="number">1</span>); };
+          }
+          <span class="keyword">if</span>(parseFloat(newFinalValue) != parseFloat(textRounderUpdater(newFinalValue))){
+          textRounderUpdater = <span class="function"><span class="keyword">function</span><span
+                  class="params">(value)</span>{</span> <span class="keyword">return</span>
+          parseFloat(value).toFixed(<span class="number">2</span>); };
+          }
+
+          <span class="keyword">var</span> textTween = <span class="function"><span class="keyword">function</span><span
+                  class="params">()</span>{</span>
+          <span class="keyword">var</span> i = d3.interpolate(<span class="keyword">this</span>.textContent,
+          parseFloat(value).toFixed(<span class="number">2</span>));
+          <span class="keyword">return</span> <span class="function"><span class="keyword">function</span><span
+                  class="params">(t)</span> {</span> <span class="keyword">this</span>.textContent =
+          textRounderUpdater(i(t)) + percentText; }
+          };
+
+          text1.transition()
+          .duration(config.waveRiseTime)
+          .tween(<span class="string">"text"</span>, textTween);
+          text2.transition()
+          .duration(config.waveRiseTime)
+          .tween(<span class="string">"text"</span>, textTween);
+
+          <span class="keyword">var</span> fillPercent = Math.max(config.minValue, Math.min(config.maxValue,
+          value))/config.maxValue;
+          <span class="keyword">var</span> waveHeight = fillCircleRadius*waveHeightScale(fillPercent*<span
+                  class="number">100</span>);
+          <span class="keyword">var</span> waveRiseScale = d3.scale.linear()
+          <span class="comment">// The clipping area size is the height of the fill circle + the wave height, so we position the clip wave</span>
+          <span class="comment">// such that the it will overlap the fill circle at all when at 0%, and will totally cover the fill</span>
+          <span class="comment">// circle at 100%.</span>
+          .range([(fillCircleMargin+fillCircleRadius*<span class="number">2</span>+waveHeight),(fillCircleMargin-waveHeight)])
+          .domain([<span class="number">0</span>,<span class="number">1</span>]);
+          <span class="keyword">var</span> newHeight = waveRiseScale(fillPercent);
+          <span class="keyword">var</span> waveScaleX = d3.scale.linear().range([<span class="number">0</span>,waveClipWidth]).domain([<span
+                  class="number">0</span>,<span class="number">1</span>]);
+          <span class="keyword">var</span> waveScaleY = d3.scale.linear().range([<span class="number">0</span>,waveHeight]).domain([<span
+                  class="number">0</span>,<span class="number">1</span>]);
+          <span class="keyword">var</span> newClipArea;
+          <span class="keyword">if</span>(config.waveHeightScaling){
+          newClipArea = d3.svg.area()
+          .x(<span class="function"><span class="keyword">function</span><span class="params">(d)</span> {</span> <span
+                  class="keyword">return</span> waveScaleX(d.x); } )
+          .y0(<span class="function"><span class="keyword">function</span><span class="params">(d)</span> {</span> <span
+                  class="keyword">return</span> waveScaleY(Math.sin(Math.PI*<span class="number">2</span>*config.waveOffset*-<span
+                  class="number">1</span> + Math.PI*<span class="number">2</span>*(<span class="number">1</span>-config.waveCount)
+          + d.y*<span class="number">2</span>*Math.PI));} )
+          .y1(<span class="function"><span class="keyword">function</span><span class="params">(d)</span> {</span> <span
+                  class="keyword">return</span> (fillCircleRadius*<span class="number">2</span> + waveHeight); } );
+          } <span class="keyword">else</span> {
+          newClipArea = clipArea;
+          }
+
+          <span class="keyword">var</span> newWavePosition = config.waveAnimate?waveAnimateScale(<span
+                  class="number">1</span>):<span class="number">0</span>;
+          wave.transition()
+          .duration(<span class="number">0</span>)
+          .transition()
+          .duration(config.waveAnimate?(config.waveAnimateTime * (<span class="number">1</span>-wave.attr(<span
+                  class="string">'T'</span>))):(config.waveRiseTime))
+          .ease(<span class="string">'linear'</span>)
+          .attr(<span class="string">'d'</span>, newClipArea)
+          .attr(<span class="string">'transform'</span>,<span class="string">'translate('</span>+newWavePosition+<span
+                  class="string">',0)'</span>)
+          .attr(<span class="string">'T'</span>,<span class="string">'1'</span>)
+          .each(<span class="string">"end"</span>, <span class="function"><span class="keyword">function</span><span
+                  class="params">()</span>{</span>
+          <span class="keyword">if</span>(config.waveAnimate){
+          wave.attr(<span class="string">'transform'</span>,<span
+                  class="string">'translate('</span>+waveAnimateScale(<span class="number">0</span>)+<span
+                  class="string">',0)'</span>);
+          animateWave(config.waveAnimateTime);
+          }
+          });
+          waveGroup.transition()
+          .duration(config.waveRiseTime)
+          .attr(<span class="string">'transform'</span>,<span
+                  class="string">'translate('</span>+waveGroupXPosition+<span class="string">','</span>+newHeight+<span
+                  class="string">')'</span>)
+          }
+          }
+
+          <span class="keyword">return</span> <span class="keyword">new</span> GaugeUpdater();
+          }</code></pre>
+        </div>
+    </div>
+    <div class="gist-license">
+        <h2>LICENSE<a name="license" class="anchor" href="#license">#</a></h2>
+        This block appears to have <a target="_blank" href="http://choosealicense.com/no-license/">no license</a>.
+        Please contact <a target="_blank" href="https://github.com/brattonc">the author</a> to request a license.
+    </div>
+</div>
+
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="/highlight.min.js"></script>
+<script>
+
+    var gist = {
+        "public": true,
+        "sha": "4c2e1e4b0ed515d9d9de26d0996519fc16c2ae43",
+        "files": {
+            "README.md": {
+                "language": "Markdown",
+                "type": "text/plain",
+                "filename": "README.md",
+                "size": 1142,
+                "sha": "86b8fed67d8bfd021d79478ee09b68caacb7872c"
+            },
+            "index.html": {
+                "language": "HTML",
+                "type": "text/html",
+                "filename": "index.html",
+                "size": 3582,
+                "sha": "fd2c268b2a76f6166ac0419d68870696f1d371d5"
+            },
+            "liquidFillGauge.js": {
+                "language": "JavaScript",
+                "type": "application/javascript",
+                "filename": "liquidFillGauge.js",
+                "size": 13534,
+                "sha": "7ab04e4c55734bccb6668668c85143988c8044ff"
+            },
+            "thumbnail.gif": {
+                "language": null,
+                "type": "image/gif",
+                "filename": "thumbnail.gif",
+                "size": 18386,
+                "sha": "9d7553f1e67dd8ec8384115e7e96fbe6b582fb54"
+            }
+        },
+        "created_at": "2015-03-09T15:52:44Z",
+        "updated_at": "2016-11-03T15:48:34Z",
+        "description": "D3 Liquid Fill Gauge",
+        "owner": {"login": "brattonc"},
+        "id": "5e5ce9beee483220e2f6"
+    };
+
+    var files = d3.values(gist.files);
+
+    d3.select(".gist-readme")
+            .data(files, function (d) {
+                return d ? d.filename : this.getAttribute("data-key");
+            })
+            .each(function (d) {
+                var readme = d3.select(this);
+                d3.text("/brattonc/raw/5e5ce9beee483220e2f6/4c2e1e4b0ed515d9d9de26d0996519fc16c2ae43/" + d.filename, function (error, content) {
+                    if (error) content = "Sorry, an error occurred.";
+                    readme.html(new Showdown.converter().makeHtml(content));
+                    readme.selectAll("code").each(function () {
+                        hljs.highlightBlock(this);
+                    });
+                });
+            });
+
+    d3.selectAll(".gist-source")
+            .data(files, function (d) {
+                return d ? d.filename : this.getAttribute("data-key");
+            })
+            .select("code")
+            .attr("class", function (d) {
+                return d.language && (d.language === "JSON" ? "javascript" : d.language.toLowerCase());
+            })
+            .each(function (d) {
+                var code = d3.select(this);
+                d3.text("/brattonc/raw/5e5ce9beee483220e2f6/4c2e1e4b0ed515d9d9de26d0996519fc16c2ae43/" + (d.filename === "index.html" ? "" : d.filename), function (error, content) {
+                    if (error) content = "Sorry, an error occurred.";
+                    code.text(content);
+                    hljs.highlightBlock(code.node());
+                });
+            });
+
+</script>
+
+<script>
+
+    GoogleAnalyticsObject = "ga", ga = function () {
+        ga.q.push(arguments);
+    }, ga.q = [], ga.l = +new Date;
+    ga("create", "UA-48272912-1", "auto");
+    ga("send", "pageview");
+
+</script>
+<script async="" src="//www.google-analytics.com/analytics.js"></script>
+</body>
+</html>
