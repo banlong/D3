@@ -26,11 +26,12 @@ function liquidFillGaugeDefaultSettings(){
         valueCountUp: true, // If true, the displayed value counts up from 0 to it's final value upon loading. If false, the final value is displayed.
         displayPercent: true, // If true, a % symbol is displayed after the value.
         textColor: "#045681", // The color of the value text when the wave does not overlap it.
-        waveTextColor: "#A4DBf8" // The color of the value text when the wave overlaps it.
+        waveTextColor: "#A4DBf8", // The color of the value text when the wave overlaps it.
+        showGaugeLabel: false
     };
 }
 
-function loadLiquidFillGauge(elementId, value, config) {
+function loadLiquidFillGauge(elementId, value, gaugeLabel, config) {
     if(config == null) config = liquidFillGaugeDefaultSettings();
     var gauge = d3.select("#" + elementId);
 
@@ -122,29 +123,17 @@ function loadLiquidFillGauge(elementId, value, config) {
         .style("fill", config.circleColor)
         .attr('transform','translate('+(radius)+','+(radius)+')');
 
-    //Nghiep----
-    var textCircleArc = d3.svg.arc()
-        .startAngle(gaugeCircleX(0.30))
-        .endAngle(gaugeCircleX(0.70))
-        .outerRadius(gaugeCircleY(radius))
-        .innerRadius(gaugeCircleY(radius-circleThickness));
-    var labelShift = -5;
-    gaugeGroup.append("path")
-        .attr("id", "circleArc2")
-        .attr("d", textCircleArc)
-        //.style("fill", config.circleColor)
-        .style("fill", "none")
-        .attr('transform','translate('+(radius)+','+(radius+labelShift)+')');
-    gaugeGroup.append("text")
-        .append("textPath") //append a textPath to the text element
-        .attr("xlink:href", "#circleArc2") //place the ID of the path here
-        .style("text-anchor","right") //place the text halfway on the arc
-        .attr("startOffset", "65%")
-        .attr("font-family", "sans-serif")
-        .attr("font-size", "12px")
-        .attr("fill", "black")
-        .text("Washington");
-    ///////
+    //Display Gauge label
+    if(config.showGaugeLabel){
+        var text0 = gaugeGroup.append("text")
+            .text(gaugeLabel)
+            .attr("class", "liquidFillGaugeText")
+            .attr("text-anchor", "middle")
+            .attr("font-size", "11px")
+            .attr("font-family", "sans-serif")
+            .style("fill", config.textColor)
+            .attr('transform','translate('+(radius) +','+textRiseScaleY(config.textVertPosition - 0.2)+ ')');
+    }
 
     // Text where the wave does not overlap.
     var text1 = gaugeGroup.append("text")

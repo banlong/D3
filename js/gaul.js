@@ -16,7 +16,7 @@ function drawGaul(){
     config1.waveOffset = 0.25;
     config1.valueCountUp = false;
     config1.displayPercent = false;
-    gauge1 = loadLiquidFillGauge("fillgauge1", 55, config1);
+    gauge1 = loadLiquidFillGauge("fillgauge1", 55, "Washington", config1);
 
 
     var config2 = liquidFillGaugeDefaultSettings();
@@ -30,7 +30,7 @@ function drawGaul(){
     config2.waveAnimateTime = 2000;
     config2.waveHeight = 0.3;
     config2.waveCount = 1;
-    gauge2= loadLiquidFillGauge("fillgauge2", 28, config2);
+    gauge2= loadLiquidFillGauge("fillgauge2", 28, "Texas", config2);
 
 
     var config3 = liquidFillGaugeDefaultSettings();
@@ -43,7 +43,7 @@ function drawGaul(){
     config3.waveOffset = 0.25;
     config3.valueCountUp = false;
     config3.displayPercent = false;
-    gauge3 = loadLiquidFillGauge("fillgauge3", 60.1, config3);
+    gauge3 = loadLiquidFillGauge("fillgauge3", 60.1, "California",config3);
 
 
     var config4 = liquidFillGaugeDefaultSettings();
@@ -61,7 +61,7 @@ function drawGaul(){
     config4.waveOffset = 0.25;
     config4.textSize = 0.75;
     config4.waveCount = 3;
-    gauge4 = loadLiquidFillGauge("fillgauge4", 50, config4);
+    gauge4 = loadLiquidFillGauge("fillgauge4", 50, "Idaho", config4);
 
 
     var config5 = liquidFillGaugeDefaultSettings();
@@ -80,9 +80,10 @@ function drawGaul(){
     config5.minValue = 30;
     config5.maxValue = 150;
     config5.displayPercent = false;
-    gauge5 = loadLiquidFillGauge("fillgauge5", 60.44);
+    config5.showGaugeLabel = true;
+    gauge5 = loadLiquidFillGauge("fillgauge5", 60.44, "Oregan");
 
-    gauge6 = loadLiquidFillGauge("fillgauge6", 80);
+    gauge6 = loadLiquidFillGauge("fillgauge6", 80, "New York", config5);
 }
 
 function NewValue(){
